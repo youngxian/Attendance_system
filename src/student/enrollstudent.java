@@ -77,9 +77,32 @@ public class enrollstudent {
         return check;
     }
     //// add user here;
-    public void adduser(String fname, String lname, String uname, String phoneno, String email, String password, String department, String categories, FileInputStream img){
+    public void adduser(String fname, String lname, String uname, String phoneno, String email, String password, String department, String categories, FileInputStream img) throws SQLException{
+        
+        try {
+            String sql = "INSERT INTO `" + "User_login" + "` (`id`, `First Name`, `Last Name`, `Username`, `Password`, `Status`, `Image filepath`) VALUES (NULL, '" + fname + "', '" + lname + "', '" + uname + "', '" + password + "', '" + categories + "', '" + img +"')";
+            stmt = c.createStatement();
+            stmt.executeUpdate(sql);
+            //loadstudentsdata();
+            //displayerror.setText("** You have been add **");
+
+        } catch (SQLException es) {
+            es.printStackTrace();
+        }
+        stmt.close();
+        
+        try {
+            String sql = "INSERT INTO `" + "Lecturers" + "` (`id`, `First Name`, `Last Name`, `Email`, `Department`, `Phone Number`) VALUES (NULL, '" + fname + "', '" + lname + "', '" + email + "', '" + department + "', '" + phoneno +"')";
+            stmt = c.createStatement();
+            stmt.executeUpdate(sql);
+            //loadstudentsdata();
+            //displayerror.setText("** You have been add **");
+
+        } catch (SQLException es) {
+            es.printStackTrace();
         
         
+        }
         
     }
 

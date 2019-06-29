@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
@@ -34,6 +35,7 @@ public class StudentenrollController implements Initializable {
 
     ObservableList deptp = FXCollections.observableArrayList("Computer Science", "Information Technology", "Cyber Security", "Physics and Electronics");
     ObservableList level = FXCollections.observableArrayList("100", "200", "300", "400", "500");
+    ObservableList catego = FXCollections.observableArrayList("Admin", "Lecturer");
     public Connection c;
     public String f_name;
     public String l_name;
@@ -62,13 +64,71 @@ public class StudentenrollController implements Initializable {
     private ComboBox<String> selectlevel;
 
     @FXML
-    void enrollsubmitbtn(ActionEvent event) {
+    private AnchorPane adduserscreen;
+
+    @FXML
+    private ImageView adduserimg;
+
+    @FXML
+    private TextField adduserf;
+
+    @FXML
+    private TextField adduserl;
+
+    @FXML
+    private TextField addemail;
+
+    @FXML
+    private TextField adduserphone;
+
+    @FXML
+    private TextField adduser;
+
+    @FXML
+    private TextField adduserp;
+
+    @FXML
+    private TextField adduserc;
+
+    @FXML
+    private ComboBox<String> addusercati;
+
+    @FXML
+    private ComboBox<String> addusercati1;
+
+    //// dashboard add user btn
+    
+        @FXML
+    void usersbtnadd(ActionEvent event) {
+        adduserscreen.toFront();
+        
+    }
+    
+    /// ssave user added data button
+    
+    @FXML
+    void adduserbtn(ActionEvent event) {
             if(!fname.getText().isEmpty() && !sname.getText().isEmpty() && !matno.getText().isEmpty() && !selectdepart.getValue().isEmpty() && !selectlevel.getValue().isEmpty()){
                 System.out.println("field");
                 
                 
             }else{
                 System.out.println("not - field");
+                
+            }
+        
+        
+    }
+    
+    
+    @FXML
+    void enrollsubmitbtn(ActionEvent event) {
+            if(!adduserp.getText().isEmpty() && !adduserphone.getText().isEmpty() && !adduser.getText().isEmpty() && !adduserf.getText().isEmpty() && !adduserl.getText().isEmpty() && !addemail.getText().isEmpty() && !addusercati.getValue().isEmpty() && !addusercati1.getValue().isEmpty()){
+                System.out.println("present");
+                
+                
+            }else{
+                System.out.println("ll - field");
                 
             }
     }
@@ -125,6 +185,8 @@ public class StudentenrollController implements Initializable {
     public void setcombo() {
         selectdepart.setItems(deptp);
         selectlevel.setItems(level);
+        addusercati.setItems(catego);
+        addusercati1.setItems(deptp);
 
     }
 
