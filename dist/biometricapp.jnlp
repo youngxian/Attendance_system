@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="biometricapp.jar" size="5591091" download="eager" />
+    <jar href="biometricapp.jar" size="5597496" download="eager" />
     <jar href="lib/controlsfx-8.40.11.jar" size="985420" download="eager" />
     <jar href="lib/jfoenix.jar" size="2445468" download="eager" />
     <jar href="lib/mysql-connector-java-5.1.23-bin.jar" size="834091" download="eager" />
