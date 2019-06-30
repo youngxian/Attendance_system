@@ -51,10 +51,10 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="ipaddress" promptText="Enter Ip address:port" style="-fx-background-color: transparent; -fx-border-color: grey; -fx-Text-fill: white;" text="127.0.0.1:3308" />
+                  <TextField fx:id="ipaddress" promptText="Enter Ip address:port" style="-fx-background-color: transparent; -fx-border-color: grey; -fx-Text-fill: white;" text="calebattendance.ciys6epraz4g.us-east-2.rds.amazonaws.com" />
                   <TextField fx:id="databasename" promptText="Enter database name" style="-fx-background-color: transparent; -fx-border-color: grey; -fx-Text-fill: white;" text="attendance" />
-                  <TextField fx:id="dbuser" promptText="username" style="-fx-background-color: transparent; -fx-border-color: grey; -fx-Text-fill: white;" text="root" />
-                  <TextField fx:id="dbpass" promptText="Enter password" style="-fx-background-color: transparent; -fx-border-color: grey; -fx-Text-fill: white;" />
+                  <TextField fx:id="dbuser" promptText="username" style="-fx-background-color: transparent; -fx-border-color: grey; -fx-Text-fill: white;" text="admin" />
+                  <TextField fx:id="dbpass" promptText="Enter password" style="-fx-background-color: transparent; -fx-border-color: grey; -fx-Text-fill: white;" text="calebuniversity" />
                   <Button mnemonicParsing="false" onAction="#submitbtn" prefHeight="31.0" prefWidth="214.0" style="-fx-background-color: green; -fx-background-radius: 0 0 0 0;" text="Proceed" textFill="WHITE" />
                   <Label fx:id="messlabel" prefHeight="13.0" prefWidth="262.0" textAlignment="CENTER" textFill="#e44343">
                      <font>
