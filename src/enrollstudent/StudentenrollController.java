@@ -88,6 +88,9 @@ public class StudentenrollController implements Initializable {
     private Label messagelabel;
 
     @FXML
+    private Button enrrolbtnn;
+
+    @FXML
     private TextField fname;
 
     @FXML
@@ -95,6 +98,9 @@ public class StudentenrollController implements Initializable {
 
     @FXML
     private TextField matno;
+
+    @FXML
+    private Label fingernumber;
 
     @FXML
     private ComboBox<String> selectdepart;
@@ -164,11 +170,12 @@ public class StudentenrollController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-
-        // set the thumbprint red image
-        setfingerimg();
-        check_reader();
+        try {
+            // set the thumbprint red image
+            setfingerimg();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(StudentenrollController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void initVariable(Connection connect) {
@@ -227,11 +234,13 @@ public class StudentenrollController implements Initializable {
     }
 
     @FXML
-    void startfingerbtn(ActionEvent event) {
-        
-        StudentenrollController std = new StudentenrollController();
-        DPFPTemplate temp = std.getTemplate(null, 1);
-        byte[] b = temp.serialize();
+    void startfingerbtn(ActionEvent event) throws FileNotFoundException {
+        fingernumber.setText("");
+        Image imae = new Image(new FileInputStream("thumb.png"));
+        fingerprintimg.setImage(imae);
+        //StudentenrollController std = new StudentenrollController();
+        //DPFPTemplate temp = std.getTemplate(null, 1);
+        //byte[] b = temp.serialize();
         //temp.insert(1, b);
     }
 
@@ -278,12 +287,25 @@ public class StudentenrollController implements Initializable {
 
     }
 
-    public void setfingerimg() {
+    public void setfingerimg() throws FileNotFoundException {
         // /Users/JERRY/NetBeansProjects/biometricapp/src/img/thumb.png
         try {
+            Image image = new Image(new FileInputStream("thumb.png"));
+                           fingerprintimg.setImage(image);
+            //fingerbiometric ffif = new fingerbiometric();
+            //Boolean present = ffif.listReaders();
 
-            Image image = new Image(new FileInputStream("/Users/JERRY/NetBeansProjects/biometricapp/src/img/thumb.png"));
-            fingerprintimg.setImage(image);
+//            if (present) {
+//                fingerprintimg.setImage(image);
+//                fingernumber.setText("");
+//                dispalydiv.setText("DigitalPersona device is Connected");
+//            } else {
+//                fingernumber.setText("");
+//                Image imae = new Image(new FileInputStream("device.png"));
+//                fingerprintimg.setImage(imae);
+//                dispalydiv.setText("Device disconnected");
+//
+//            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(StudentenrollController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -387,20 +409,6 @@ public class StudentenrollController implements Initializable {
         this.pretablecou.setItems(data);
     }
 
-    public void check_reader() {
-        fingerbiometric ffif = new fingerbiometric();
-
-        Boolean present = ffif.listReaders();
-
-        if (present) {
-            dispalydiv.setText("DigitalPersona device is Connected");
-        } else {
-            dispalydiv.setText("Device disconnected");
-
-        }
-
-    }
-
     public static final EnumMap<DPFPFingerIndex, String> fingerNames;
 
     static {
@@ -409,10 +417,10 @@ public class StudentenrollController implements Initializable {
         fingerNames.put(DPFPFingerIndex.RIGHT_THUMB, "right thumb");
     }
 
-    public DPFPTemplate getTemplate(String activeReader, int nFinger) {
+    public DPFPTemplate getTemplate(String activeReader, int nFinger) throws FileNotFoundException {
         System.out.printf("Performing fingerprint enrollment...\n");
-            messagelabel.setText("Place your Left thumb");
-            
+        messagelabel.setText("Place your Left thumb");
+
         DPFPTemplate template = null;
         try {
             DPFPFingerIndex finger = DPFPFingerIndex.values()[nFinger];
@@ -420,8 +428,10 @@ public class StudentenrollController implements Initializable {
             DPFPEnrollment enrollment = DPFPGlobal.getEnrollmentFactory().createEnrollment();
             while (enrollment.getFeaturesNeeded() > 0) {
                 DPFPSample sample = getSample(activeReader,
-                        
                         String.format("Scan your %s finger (%d remaining)\n", fingerName(finger), enrollment.getFeaturesNeeded()));
+                messagelabel.setText("Scanning thumb 4 times");
+                fingernumber.setText(fingerName(finger));
+                enrrolbtnn.setDisable(true);
                 if (sample == null) {
                     continue;
                 }
@@ -446,9 +456,15 @@ public class StudentenrollController implements Initializable {
             template = enrollment.getTemplate();
 
             System.out.printf("The %s was enrolled.\n", fingerprintName(finger));
+            enrrolbtnn.setDisable(false);
+            messagelabel.setText("Enrollment Completed");
+            fingernumber.setText("");
 
         } catch (DPFPImageQualityException e) {
-
+            enrrolbtnn.setDisable(false);
+            messagelabel.setText("Check if device connected");
+            Image image = new Image(new FileInputStream("device.png"));
+            fingerprintimg.setImage(image);
             System.out.printf("Failed to enroll the finger.\n");
 
         } catch (InterruptedException e) {
@@ -458,7 +474,7 @@ public class StudentenrollController implements Initializable {
     }
 
     public DPFPSample getSample(String activeReader, String prompt)
-        throws InterruptedException {
+            throws InterruptedException {
         final LinkedBlockingQueue<DPFPSample> samples = new LinkedBlockingQueue<DPFPSample>();
         DPFPCapture capture = DPFPGlobal.getCaptureFactory().createCapture();
         capture.setReaderSerialNumber(activeReader);
@@ -476,12 +492,14 @@ public class StudentenrollController implements Initializable {
         });
         capture.addReaderStatusListener(new DPFPReaderStatusAdapter() {
             int lastStatus = DPFPReaderStatusEvent.READER_CONNECTED;
+
             public void readerConnected(DPFPReaderStatusEvent e) {
                 if (lastStatus != e.getReaderStatus()) {
                     System.out.println("Reader is connected");
                 }
                 lastStatus = e.getReaderStatus();
             }
+
             public void readerDisconnected(DPFPReaderStatusEvent e) {
                 if (lastStatus != e.getReaderStatus()) {
                     System.out.println("Reader is disconnected");
@@ -505,6 +523,7 @@ public class StudentenrollController implements Initializable {
     public String fingerName(DPFPFingerIndex finger) {
         return fingerNames.get(finger);
     }
+
     public String fingerprintName(DPFPFingerIndex finger) {
         return fingerNames.get(finger) + " fingerprint";
     }

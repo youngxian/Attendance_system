@@ -176,22 +176,37 @@
                         <ImageView fitHeight="226.0" fitWidth="221.0" layoutX="384.0" layoutY="139.0" pickOnBounds="true" preserveRatio="true" />
                         <HBox layoutX="70.0" layoutY="94.0" prefHeight="316.0" prefWidth="639.0" spacing="50.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="94.0">
                            <children>
-                              <VBox alignment="CENTER" prefHeight="352.0" prefWidth="428.0" spacing="50.0">
+                              <VBox alignment="CENTER" prefHeight="352.0" prefWidth="428.0" spacing="30.0">
                                  <children>
-                                    <ImageView fx:id="fingerprintimg" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../../../Pictures/bio2.png" />
-                                       </image></ImageView>
+                                    <AnchorPane>
+                                       <children>
+                                          <ImageView fx:id="fingerprintimg" fitHeight="144.0" fitWidth="144.0" layoutX="167.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="167.0" AnchorPane.rightAnchor="167.0" AnchorPane.topAnchor="3.0">
+                                             <image>
+                                                <Image url="@../../device.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label fx:id="fingernumber" layoutX="203.0" layoutY="31.0" prefHeight="88.0" prefWidth="48.0" textFill="#8fff83" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="203.0" AnchorPane.rightAnchor="231.0" AnchorPane.topAnchor="31.0">
+                                             <font>
+                                                <Font name="Arial Rounded MT Bold" size="72.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
                                     <Label fx:id="messagelabel" prefHeight="28.0" prefWidth="205.0" text="Place your Right Thumb" textFill="#fff8f8">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Button mnemonicParsing="false" onAction="#startfingerbtn" prefHeight="30.0" prefWidth="164.0" style="-fx-background-color: green; -fx-background-radius: 0 0 0 0;" text="Enroll Finger" textFill="WHITE" />
+                                    <Button fx:id="enrrolbtnn" mnemonicParsing="false" onAction="#startfingerbtn" prefHeight="30.0" prefWidth="164.0" style="-fx-background-color: green; -fx-background-radius: 0 0 0 0;" text="Enroll Finger" textFill="WHITE" />
                                  </children>
                               </VBox>
-                              <VBox alignment="CENTER" prefHeight="352.0" prefWidth="401.0" spacing="30.0">
+                              <VBox alignment="CENTER_LEFT" prefHeight="352.0" prefWidth="401.0" spacing="30.0">
                                  <children>
+                                    <Label text="Bio Data" textFill="WHITE">
+                                       <font>
+                                          <Font size="28.0" />
+                                       </font>
+                                    </Label>
                                     <TextField fx:id="fname" prefHeight="44.0" prefWidth="336.0" promptText="Entet Your first name" style="-fx-background-color: transparent; -fx-border-width: 0 0 2 0; -fx-border-color: grey;" />
                                     <TextField fx:id="sname" prefHeight="25.0" prefWidth="343.0" promptText="Enter Surname" style="-fx-background-color: transparent; -fx-border-width: 0 0 2 0; -fx-border-color: grey;" />
                                     <TextField fx:id="matno" prefHeight="25.0" prefWidth="343.0" promptText="Enter Matric No" style="-fx-background-color: transparent; -fx-border-width: 0 0 2 0; -fx-border-color: grey;" />
