@@ -31,13 +31,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.EnumMap;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -53,6 +57,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -70,6 +75,8 @@ public class StudentenrollController implements Initializable {
     ObservableList level = FXCollections.observableArrayList("100", "200", "300", "400", "500");
     ObservableList catego = FXCollections.observableArrayList("Admin", "Lecturer");
     private ObservableList<getcourses> data;
+    public String tet;
+    public Boolean start;
 
     public Connection c;
     public String f_name;
@@ -79,7 +86,6 @@ public class StudentenrollController implements Initializable {
     public File file;
     public PreparedStatement pt;
     public ResultSet rs;
-    static EnumMap<DPFPFingerIndex, DPFPTemplate> templates = new EnumMap<DPFPFingerIndex, DPFPTemplate>(DPFPFingerIndex.class);
 
     @FXML
     private ImageView fingerprintimg;
@@ -136,6 +142,9 @@ public class StudentenrollController implements Initializable {
     private TextField adduserc;
 
     @FXML
+    private Label labelmedd;
+
+    @FXML
     private Button selectimg;
 
     @FXML
@@ -176,6 +185,7 @@ public class StudentenrollController implements Initializable {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(StudentenrollController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     public void initVariable(Connection connect) {
@@ -235,15 +245,27 @@ public class StudentenrollController implements Initializable {
 
     @FXML
     void startfingerbtn(ActionEvent event) throws FileNotFoundException {
-        fingernumber.setText("");
-        Image imae = new Image(new FileInputStream("thumb.png"));
+//        
+
+//  labelmedd.setText("Place your left Thumb 4x");
+        Image imae = new Image(new FileInputStream("device.png"));
         fingerprintimg.setImage(imae);
-        //StudentenrollController std = new StudentenrollController();
-        //DPFPTemplate temp = std.getTemplate(null, 1);
-        //byte[] b = temp.serialize();
+
+       new Thread(task).start();
+        //  DPFPTemplate temp = std.getTemplate(null, 4);
+        //  byte[] b = temp.serialize();
         //temp.insert(1, b);
     }
-
+ Task task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                digital std = new digital();
+                DPFPTemplate temp = std.getTemplate(null, 4);
+                byte[] b = temp.serialize();
+               // temp.insert(1, b);
+                return null;
+            }
+        };
     @FXML
     void takeattendancebtn(ActionEvent event) {
 
@@ -289,11 +311,11 @@ public class StudentenrollController implements Initializable {
 
     public void setfingerimg() throws FileNotFoundException {
         // /Users/JERRY/NetBeansProjects/biometricapp/src/img/thumb.png
-        try {
-            Image image = new Image(new FileInputStream("thumb.png"));
-                           fingerprintimg.setImage(image);
-            //fingerbiometric ffif = new fingerbiometric();
-            //Boolean present = ffif.listReaders();
+        // try {  
+        // Image image = new Image(new FileInputStream("thumb.png"));
+        // fingerprintimg.setImage(image);
+        //fingerbiometric ffif = new fingerbiometric();
+        //Boolean present = ffif.listReaders();
 
 //            if (present) {
 //                fingerprintimg.setImage(image);
@@ -306,9 +328,9 @@ public class StudentenrollController implements Initializable {
 //                dispalydiv.setText("Device disconnected");
 //
 //            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(StudentenrollController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //  } catch (FileNotFoundException ex) {
+        // Logger.getLogger(StudentenrollController.class.getName()).log(Level.SEVERE, null, ex);
+        //   }
     }
 
     /// set the details in combo box
@@ -409,122 +431,4 @@ public class StudentenrollController implements Initializable {
         this.pretablecou.setItems(data);
     }
 
-    public static final EnumMap<DPFPFingerIndex, String> fingerNames;
-
-    static {
-        fingerNames = new EnumMap<DPFPFingerIndex, String>(DPFPFingerIndex.class);
-        fingerNames.put(DPFPFingerIndex.LEFT_THUMB, "left thumb");
-        fingerNames.put(DPFPFingerIndex.RIGHT_THUMB, "right thumb");
-    }
-
-    public DPFPTemplate getTemplate(String activeReader, int nFinger) throws FileNotFoundException {
-        System.out.printf("Performing fingerprint enrollment...\n");
-        messagelabel.setText("Place your Left thumb");
-
-        DPFPTemplate template = null;
-        try {
-            DPFPFingerIndex finger = DPFPFingerIndex.values()[nFinger];
-            DPFPFeatureExtraction featureExtractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
-            DPFPEnrollment enrollment = DPFPGlobal.getEnrollmentFactory().createEnrollment();
-            while (enrollment.getFeaturesNeeded() > 0) {
-                DPFPSample sample = getSample(activeReader,
-                        String.format("Scan your %s finger (%d remaining)\n", fingerName(finger), enrollment.getFeaturesNeeded()));
-                messagelabel.setText("Scanning thumb 4 times");
-                fingernumber.setText(fingerName(finger));
-                enrrolbtnn.setDisable(true);
-                if (sample == null) {
-                    continue;
-                }
-                DPFPFeatureSet featureSet;
-
-                try {
-
-                    featureSet = featureExtractor.createFeatureSet(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
-
-                } catch (DPFPImageQualityException e) {
-
-                    System.out.printf("Bad image quality: \"%s\". Try again. \n", e.getCaptureFeedback().toString());
-
-                    continue;
-
-                }
-
-                enrollment.addFeatures(featureSet);
-
-            }
-
-            template = enrollment.getTemplate();
-
-            System.out.printf("The %s was enrolled.\n", fingerprintName(finger));
-            enrrolbtnn.setDisable(false);
-            messagelabel.setText("Enrollment Completed");
-            fingernumber.setText("");
-
-        } catch (DPFPImageQualityException e) {
-            enrrolbtnn.setDisable(false);
-            messagelabel.setText("Check if device connected");
-            Image image = new Image(new FileInputStream("device.png"));
-            fingerprintimg.setImage(image);
-            System.out.printf("Failed to enroll the finger.\n");
-
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return template;
-    }
-
-    public DPFPSample getSample(String activeReader, String prompt)
-            throws InterruptedException {
-        final LinkedBlockingQueue<DPFPSample> samples = new LinkedBlockingQueue<DPFPSample>();
-        DPFPCapture capture = DPFPGlobal.getCaptureFactory().createCapture();
-        capture.setReaderSerialNumber(activeReader);
-        capture.setPriority(DPFPCapturePriority.CAPTURE_PRIORITY_LOW);
-        capture.addDataListener(new DPFPDataListener() {
-            public void dataAcquired(DPFPDataEvent e) {
-                if (e != null && e.getSample() != null) {
-                    try {
-                        samples.put(e.getSample());
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        });
-        capture.addReaderStatusListener(new DPFPReaderStatusAdapter() {
-            int lastStatus = DPFPReaderStatusEvent.READER_CONNECTED;
-
-            public void readerConnected(DPFPReaderStatusEvent e) {
-                if (lastStatus != e.getReaderStatus()) {
-                    System.out.println("Reader is connected");
-                }
-                lastStatus = e.getReaderStatus();
-            }
-
-            public void readerDisconnected(DPFPReaderStatusEvent e) {
-                if (lastStatus != e.getReaderStatus()) {
-                    System.out.println("Reader is disconnected");
-                }
-                lastStatus = e.getReaderStatus();
-            }
-        });
-
-        try {
-            capture.startCapture();
-            System.out.print(prompt);
-            return samples.take();
-        } catch (RuntimeException e) {
-            System.out.printf("Failed to start capture. Check that reader is not used by another application.\n");
-            throw e;
-        } finally {
-            capture.stopCapture();
-        }
-    }
-
-    public String fingerName(DPFPFingerIndex finger) {
-        return fingerNames.get(finger);
-    }
-
-    public String fingerprintName(DPFPFingerIndex finger) {
-        return fingerNames.get(finger) + " fingerprint";
-    }
 }
